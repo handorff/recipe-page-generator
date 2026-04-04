@@ -74,9 +74,12 @@ textarea {
 .parody-banner,
 .load-error,
 .editor-toolbar,
-.recipe-page,
 .share-footer {
   max-width: var(--page-width);
+  margin: 0 auto;
+}
+
+.recipe-page {
   margin: 0 auto;
 }
 
