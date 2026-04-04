@@ -87,10 +87,8 @@ describe('App', () => {
     );
   });
 
-  it('renders a clean, non-editable share mode from a valid hash', async () => {
-    const user = userEvent.setup();
+  it('renders a clean, non-editable share mode from a valid hash', () => {
     renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
-    await acknowledgeDisclaimer(user);
 
     expect(screen.queryByText(/parody project/i)).not.toBeInTheDocument();
     expect(
@@ -119,7 +117,6 @@ describe('App', () => {
 
     initialRender.unmount();
     renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
-    await acknowledgeDisclaimer(user);
 
     expect(
       screen.getByText(
@@ -153,7 +150,6 @@ describe('App', () => {
 
     initialRender.unmount();
     const shareRender = renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
-    await acknowledgeDisclaimer(user);
 
     expect(
       screen.queryByRole('button', { name: 'Copy share URL' })
@@ -172,5 +168,18 @@ describe('App', () => {
       /could not be loaded/i
     );
     expect(screen.getByRole('button', { name: 'Copy share URL' })).toBeInTheDocument();
+  });
+
+  it('does not require disclaimer acknowledgement in share mode', () => {
+    renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
+
+    expect(
+      screen.queryByRole('heading', { name: /disclaimer/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
+      )
+    ).toBeInTheDocument();
   });
 });

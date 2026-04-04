@@ -250,7 +250,7 @@ export function RecipePage({
   shareState,
   shareUrl
 }: RecipePageProps) {
-  if (!hasAcknowledgedDisclaimer) {
+  if (mode === 'edit' && !hasAcknowledgedDisclaimer) {
     return (
       <div className={`app-shell app-shell--locked mode-${mode}`}>
         <section
