@@ -319,28 +319,7 @@ export function RecipePage({
       <main className="page-shell">
         {mode === 'edit' ? (
           <section className="editor-toolbar">
-            <div>
-              <h2>Inline edit mode</h2>
-              <p>
-                Editing stays inside the recipe page. The utility strip remains
-                outside the artboard layout so the Paper-inspired page itself can
-                stay visually exact.
-              </p>
-            </div>
             <div className="share-tools">
-              <label className="share-tools__label" htmlFor="share-url">
-                Share URL
-              </label>
-              <input
-                className="share-tools__input"
-                id="share-url"
-                readOnly
-                value={
-                  canShare
-                    ? shareUrl
-                    : 'Add recipe content to generate a share URL.'
-                }
-              />
               <div className="share-tools__actions">
                 <button
                   className="toolbar-action"
