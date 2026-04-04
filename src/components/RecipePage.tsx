@@ -8,6 +8,7 @@ import type { AppMode, RecipeDraft } from '../types';
 interface RecipePageProps {
   canShare: boolean;
   disclaimerText: string;
+  editUrl: string;
   hasAcknowledgedDisclaimer: boolean;
   loadError: string | null;
   mode: AppMode;
@@ -233,6 +234,7 @@ function ItemControls({
 export function RecipePage({
   canShare,
   disclaimerText,
+  editUrl,
   hasAcknowledgedDisclaimer,
   loadError,
   mode,
@@ -617,7 +619,12 @@ export function RecipePage({
       </main>
 
       {mode === 'share' ? (
-        <footer className="share-footer">{disclaimerText}</footer>
+        <footer className="share-footer">
+          <p className="share-footer__disclaimer">{disclaimerText}</p>
+          <a className="share-footer__button" href={editUrl}>
+            Create your own recipe
+          </a>
+        </footer>
       ) : null}
     </div>
   );

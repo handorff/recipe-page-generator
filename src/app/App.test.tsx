@@ -11,6 +11,16 @@ function renderWithHash(hash = '') {
   return render(<App />);
 }
 
+function renderAtUrl(search = '', hash = '') {
+  window.history.replaceState(
+    {},
+    '',
+    `${window.location.pathname}${search}${hash}`
+  );
+
+  return render(<App />);
+}
+
 async function acknowledgeDisclaimer(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole('button', { name: /ok, i understand/i }));
 }
@@ -91,7 +101,8 @@ describe('App', () => {
   });
 
   it('renders a clean, non-editable share mode from a valid hash', () => {
-    renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
+    const shareHash = encodeRecipeToHash(DEFAULT_RECIPE);
+    renderWithHash(shareHash);
 
     expect(document.title).toBe(DEFAULT_RECIPE.title);
     expect(screen.queryByText(/parody project/i)).not.toBeInTheDocument();
@@ -106,6 +117,12 @@ describe('App', () => {
         /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
       )
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Create your own recipe' })
+    ).toHaveAttribute(
+      'href',
+      `${window.location.origin}${window.location.pathname}?mode=edit${shareHash}`
+    );
   });
 
   it('shows the right disclaimer or footer for each mode', async () => {
@@ -186,6 +203,20 @@ describe('App', () => {
         /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
       )
     ).toBeInTheDocument();
+  });
+
+  it('opens a hashed recipe in edit mode when explicitly requested', async () => {
+    const user = userEvent.setup();
+    renderAtUrl('?mode=edit', encodeRecipeToHash(DEFAULT_RECIPE));
+
+    expect(
+      screen.getByRole('heading', { name: /disclaimer/i })
+    ).toBeInTheDocument();
+
+    await acknowledgeDisclaimer(user);
+
+    expect(screen.getByRole('button', { name: 'Copy share URL' })).toBeInTheDocument();
+    expect(document.title).toBe('Fake NYT Cooking Recipe Generator');
   });
 
   it('reveals the full blurb and hides the Read More button in share mode', async () => {

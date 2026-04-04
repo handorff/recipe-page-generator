@@ -12,6 +12,8 @@ import type { AppMode, RecipeDraft } from '../types';
 const PARODY_DISCLAIMER =
   'This page is for parody use only and is not affiliated with, endorsed by, or sponsored by The New York Times or NYT Cooking.';
 const APP_TITLE = 'Fake NYT Cooking Recipe Generator';
+const EDIT_MODE_QUERY_PARAM = 'mode';
+const EDIT_MODE_QUERY_VALUE = 'edit';
 
 interface AppState {
   draft: RecipeDraft;
@@ -25,12 +27,32 @@ function buildShareUrl(hash: string): string {
   }
 
   const url = new URL(window.location.href);
+  url.searchParams.delete(EDIT_MODE_QUERY_PARAM);
   url.hash = hash;
 
   return url.toString();
 }
 
-function initializeAppState(hash: string): AppState {
+function buildEditUrl(hash: string): string {
+  if (typeof window === 'undefined') {
+    return `?${EDIT_MODE_QUERY_PARAM}=${EDIT_MODE_QUERY_VALUE}${hash}`;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set(EDIT_MODE_QUERY_PARAM, EDIT_MODE_QUERY_VALUE);
+  url.hash = hash;
+
+  return url.toString();
+}
+
+function shouldOpenInEditMode(search: string): boolean {
+  return (
+    new URLSearchParams(search).get(EDIT_MODE_QUERY_PARAM) ===
+    EDIT_MODE_QUERY_VALUE
+  );
+}
+
+function initializeAppState(hash: string, search: string): AppState {
   if (!hash) {
     return {
       draft: DEFAULT_RECIPE,
@@ -45,7 +67,7 @@ function initializeAppState(hash: string): AppState {
     return {
       draft: decodedRecipe.value,
       loadError: null,
-      mode: 'share'
+      mode: shouldOpenInEditMode(search) ? 'edit' : 'share'
     };
   }
 
@@ -77,7 +99,7 @@ function reorderList(
 
 export function App() {
   const [appState, setAppState] = useState<AppState>(() =>
-    initializeAppState(window.location.hash)
+    initializeAppState(window.location.hash, window.location.search)
   );
   const [hasAcknowledgedDisclaimer, setHasAcknowledgedDisclaimer] =
     useState(false);
@@ -105,6 +127,7 @@ export function App() {
 
   const shareHash = encodeRecipeToHash(appState.draft);
   const shareUrl = buildShareUrl(shareHash);
+  const editUrl = buildEditUrl(shareHash);
   const canShare = hasMeaningfulContent(appState.draft);
 
   useEffect(() => {
@@ -131,6 +154,7 @@ export function App() {
     <RecipePage
       canShare={canShare}
       disclaimerText={PARODY_DISCLAIMER}
+      editUrl={editUrl}
       hasAcknowledgedDisclaimer={hasAcknowledgedDisclaimer}
       loadError={appState.loadError}
       mode={appState.mode}

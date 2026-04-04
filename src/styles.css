@@ -745,6 +745,9 @@ textarea {
 }
 
 .share-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding: 16px 14px 32px;
   border-top: 1px solid #971b1e;
   background: #c62828;
@@ -752,6 +755,21 @@ textarea {
   line-height: 1.5;
   color: #fff;
   font-weight: 700;
+}
+
+.share-footer__disclaimer {
+  margin: 0;
+}
+
+.share-footer__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  color: #fff;
+  text-decoration: none;
 }
 
 @media (min-width: 760px) {
