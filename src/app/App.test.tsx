@@ -17,6 +17,8 @@ async function acknowledgeDisclaimer(user: ReturnType<typeof userEvent.setup>) {
 
 describe('App', () => {
   beforeEach(() => {
+    document.title = 'Fake NYT Cooking Recipe Generator';
+
     Object.defineProperty(window.navigator, 'clipboard', {
       configurable: true,
       value: {
@@ -43,6 +45,7 @@ describe('App', () => {
     fireEvent.blur(titleInput);
 
     expect(screen.getByText('Smoky Beans on Toast')).toBeInTheDocument();
+    expect(document.title).toBe('Fake NYT Cooking Recipe Generator');
   });
 
   it('supports ingredient and step add, delete, and reorder controls in edit mode', async () => {
@@ -90,6 +93,7 @@ describe('App', () => {
   it('renders a clean, non-editable share mode from a valid hash', () => {
     renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
 
+    expect(document.title).toBe(DEFAULT_RECIPE.title);
     expect(screen.queryByText(/parody project/i)).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Copy share URL' })
@@ -164,6 +168,7 @@ describe('App', () => {
     renderWithHash('#r=broken');
     await acknowledgeDisclaimer(user);
 
+    expect(document.title).toBe('Fake NYT Cooking Recipe Generator');
     expect(screen.getByRole('alert')).toHaveTextContent(
       /could not be loaded/i
     );

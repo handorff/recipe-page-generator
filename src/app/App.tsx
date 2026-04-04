@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { RecipePage } from '../components/RecipePage';
 import { DEFAULT_RECIPE } from '../lib/defaultRecipe';
@@ -11,6 +11,7 @@ import type { AppMode, RecipeDraft } from '../types';
 
 const PARODY_DISCLAIMER =
   'This page is for parody use only and is not affiliated with, endorsed by, or sponsored by The New York Times or NYT Cooking.';
+const APP_TITLE = 'Fake NYT Cooking Recipe Generator';
 
 interface AppState {
   draft: RecipeDraft;
@@ -105,6 +106,13 @@ export function App() {
   const shareHash = encodeRecipeToHash(appState.draft);
   const shareUrl = buildShareUrl(shareHash);
   const canShare = hasMeaningfulContent(appState.draft);
+
+  useEffect(() => {
+    const recipeTitle = appState.draft.title.trim();
+
+    document.title =
+      appState.mode === 'share' && recipeTitle ? recipeTitle : APP_TITLE;
+  }, [appState.draft.title, appState.mode]);
 
   async function copyShareUrl() {
     if (!canShare) {
