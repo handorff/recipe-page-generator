@@ -8,8 +8,16 @@ interface EditableRatingProps {
   value: number;
 }
 
+function normalizeRating(value: number): number {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+
+  return Math.min(5, Math.max(0, Math.round(value)));
+}
+
 function buildStars(value: number): string {
-  const rounded = Math.round(value);
+  const rounded = normalizeRating(value);
 
   return Array.from({ length: 5 }, (_, index) =>
     index < rounded ? '★' : '☆'
@@ -17,7 +25,7 @@ function buildStars(value: number): string {
 }
 
 function formatRatingValue(value: number): string {
-  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+  return String(normalizeRating(value));
 }
 
 export function EditableRating({
@@ -30,7 +38,7 @@ export function EditableRating({
 
   useEffect(() => {
     if (!isEditing) {
-      setDraftValue(value);
+      setDraftValue(normalizeRating(value));
     }
   }, [isEditing, value]);
 
@@ -62,9 +70,9 @@ export function EditableRating({
             max="5"
             min="0"
             onChange={(event) =>
-              setDraftValue(Number.parseFloat(event.target.value))
+              setDraftValue(normalizeRating(Number.parseInt(event.target.value, 10)))
             }
-            step="0.1"
+            step="1"
             type="range"
             value={draftValue}
           />
@@ -74,16 +82,16 @@ export function EditableRating({
             max="5"
             min="0"
             onChange={(event) =>
-              setDraftValue(Number.parseFloat(event.target.value) || 0)
+              setDraftValue(normalizeRating(Number.parseInt(event.target.value, 10)))
             }
-            step="0.1"
+            step="1"
             type="number"
             value={draftValue}
           />
           <button
             className="mini-action"
             onClick={() => {
-              onCommit(draftValue);
+              onCommit(normalizeRating(draftValue));
               setIsEditing(false);
             }}
             type="button"

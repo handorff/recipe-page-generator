@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { EditableField } from './EditableField';
 import { EditableRating } from './EditableRating';
 
@@ -250,6 +252,14 @@ export function RecipePage({
   shareState,
   shareUrl
 }: RecipePageProps) {
+  const [isBlurbExpanded, setIsBlurbExpanded] = useState(mode !== 'share');
+
+  useEffect(() => {
+    setIsBlurbExpanded(mode !== 'share');
+  }, [mode, recipe.blurb]);
+
+  const shouldShowReadMore = mode === 'share' && recipe.blurb.trim() && !isBlurbExpanded;
+
   if (mode === 'edit' && !hasAcknowledgedDisclaimer) {
     return (
       <div className={`app-shell app-shell--locked mode-${mode}`}>
@@ -451,7 +461,11 @@ export function RecipePage({
               </div>
             </section>
 
-            <section className="recipe-blurb">
+            <section
+              className={`recipe-blurb ${
+                shouldShowReadMore ? '' : 'recipe-blurb--expanded'
+              }`}
+            >
               <div className="recipe-blurb__copy">
                 <EditableField
                   className="recipe-blurb__text"
@@ -465,9 +479,17 @@ export function RecipePage({
                   value={recipe.blurb}
                 />
               </div>
-              <div className="recipe-blurb__fade" aria-hidden="true">
-                <span className="recipe-blurb__button">Read More</span>
-              </div>
+              {shouldShowReadMore ? (
+                <div className="recipe-blurb__fade">
+                  <button
+                    className="recipe-blurb__button"
+                    onClick={() => setIsBlurbExpanded(true)}
+                    type="button"
+                  >
+                    Read More
+                  </button>
+                </div>
+              ) : null}
             </section>
 
             <section className="recipe-actions">

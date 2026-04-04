@@ -343,8 +343,7 @@ textarea {
 .recipe-title,
 .section-heading,
 .recipe-blurb__text,
-.step-copy,
-.yield-row__value {
+.step-copy {
   font-family: Georgia, 'Times New Roman', serif;
 }
 
@@ -378,6 +377,13 @@ textarea {
   font-weight: 700;
 }
 
+.recipe-byline__name {
+  color: #326891;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 1px;
+}
+
 .recipe-overview {
   display: grid;
   grid-template-columns: 104px 1fr;
@@ -407,6 +413,11 @@ textarea {
   margin-left: 5px;
   font-size: 16px;
   line-height: 1.45;
+}
+
+.yield-row__value {
+  margin-left: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .overview-rating {
@@ -440,6 +451,9 @@ textarea {
 
 .recipe-blurb__copy {
   position: relative;
+}
+
+.recipe-blurb:not(.recipe-blurb--expanded) .recipe-blurb__copy {
   max-height: 78.3px;
   overflow: clip;
 }
@@ -460,16 +474,20 @@ textarea {
   justify-content: center;
   padding-left: 40px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 44%, #fff 100%);
-  pointer-events: none;
 }
 
 .recipe-blurb__button {
   display: inline-block;
   padding: 0 4px;
+  border: 0;
   background: #fff;
+  color: var(--ink);
+  cursor: pointer;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.45;
+  text-decoration: underline;
+  text-underline-offset: 1px;
 }
 
 .recipe-actions {

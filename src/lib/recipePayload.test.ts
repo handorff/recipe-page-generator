@@ -83,6 +83,23 @@ describe('recipe payload codec', () => {
     });
   });
 
+  it('rounds fractional star ratings to whole numbers', () => {
+    const encoded = encodeRecipeToHash({
+      ...DEFAULT_RECIPE,
+      starRating: 4.2
+    });
+
+    const decoded = decodeRecipeFromHash(encoded);
+
+    expect(decoded).toEqual({
+      ok: true,
+      value: {
+        ...DEFAULT_RECIPE,
+        starRating: 4
+      }
+    });
+  });
+
   it('handles invalid hashes safely', () => {
     expect(decodeRecipeFromHash('#r=not-a-real-payload')).toEqual({
       ok: false,

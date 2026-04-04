@@ -32,7 +32,7 @@ function normalizeStarRating(value: unknown): number {
     return 0;
   }
 
-  return Math.min(5, Math.max(0, Math.round(numericValue * 10) / 10));
+  return Math.min(5, Math.max(0, Math.round(numericValue)));
 }
 
 function normalizeCount(value: unknown): number {

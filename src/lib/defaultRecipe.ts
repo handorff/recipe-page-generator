@@ -5,7 +5,7 @@ export const DEFAULT_RECIPE: RecipeDraft = {
   author: 'The Imaginary Times Test Kitchen',
   publishedDate: '2026-01-12',
   cookingTime: '35 minutes',
-  starRating: 4.8,
+  starRating: 5,
   ratingsCount: 512,
   commentsCount: 47,
   blurb:

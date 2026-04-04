@@ -182,4 +182,21 @@ describe('App', () => {
       )
     ).toBeInTheDocument();
   });
+
+  it('reveals the full blurb and hides the Read More button in share mode', async () => {
+    const user = userEvent.setup();
+    const { container } = renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
+
+    const blurb = container.querySelector('.recipe-blurb');
+    expect(blurb).not.toBeNull();
+    expect(blurb).not.toHaveClass('recipe-blurb--expanded');
+
+    const readMoreButton = screen.getByRole('button', { name: 'Read More' });
+    await user.click(readMoreButton);
+
+    expect(blurb).toHaveClass('recipe-blurb--expanded');
+    expect(
+      screen.queryByRole('button', { name: 'Read More' })
+    ).not.toBeInTheDocument();
+  });
 });
