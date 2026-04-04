@@ -9,6 +9,9 @@ import {
 } from '../lib/recipePayload';
 import type { AppMode, RecipeDraft } from '../types';
 
+const PARODY_DISCLAIMER =
+  'This page is for parody use only and is not affiliated with, endorsed by, or sponsored by The New York Times or NYT Cooking.';
+
 interface AppState {
   draft: RecipeDraft;
   loadError: string | null;
@@ -75,6 +78,8 @@ export function App() {
   const [appState, setAppState] = useState<AppState>(() =>
     initializeAppState(window.location.hash)
   );
+  const [hasAcknowledgedDisclaimer, setHasAcknowledgedDisclaimer] =
+    useState(false);
   const [shareState, setShareState] = useState<'copied' | 'error' | 'idle'>(
     'idle'
   );
@@ -117,8 +122,11 @@ export function App() {
   return (
     <RecipePage
       canShare={canShare}
+      disclaimerText={PARODY_DISCLAIMER}
+      hasAcknowledgedDisclaimer={hasAcknowledgedDisclaimer}
       loadError={appState.loadError}
       mode={appState.mode}
+      onAcknowledgeDisclaimer={() => setHasAcknowledgedDisclaimer(true)}
       onAddIngredient={() =>
         updateField('ingredients', [...appState.draft.ingredients, ''])
       }

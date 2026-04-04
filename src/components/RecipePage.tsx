@@ -5,8 +5,11 @@ import type { AppMode, RecipeDraft } from '../types';
 
 interface RecipePageProps {
   canShare: boolean;
+  disclaimerText: string;
+  hasAcknowledgedDisclaimer: boolean;
   loadError: string | null;
   mode: AppMode;
+  onAcknowledgeDisclaimer: () => void;
   onAddIngredient: () => void;
   onAddStep: () => void;
   onClearLoadError: () => void;
@@ -227,8 +230,11 @@ function ItemControls({
 
 export function RecipePage({
   canShare,
+  disclaimerText,
+  hasAcknowledgedDisclaimer,
   loadError,
   mode,
+  onAcknowledgeDisclaimer,
   onAddIngredient,
   onAddStep,
   onClearLoadError,
@@ -244,6 +250,31 @@ export function RecipePage({
   shareState,
   shareUrl
 }: RecipePageProps) {
+  if (!hasAcknowledgedDisclaimer) {
+    return (
+      <div className={`app-shell app-shell--locked mode-${mode}`}>
+        <section
+          aria-labelledby="disclaimer-title"
+          aria-modal="true"
+          className="disclaimer-gate"
+          role="dialog"
+        >
+          <h1 className="disclaimer-gate__title" id="disclaimer-title">
+            Disclaimer
+          </h1>
+          <p className="disclaimer-gate__copy">{disclaimerText}</p>
+          <button
+            className="disclaimer-gate__button"
+            onClick={onAcknowledgeDisclaimer}
+            type="button"
+          >
+            OK, I understand
+          </button>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className={`app-shell mode-${mode}`}>
       <header className="site-chrome">
@@ -272,9 +303,7 @@ export function RecipePage({
 
       {mode === 'edit' ? (
         <section className="parody-banner">
-          <strong>Parody project.</strong> This page copies the Paper reference
-          artboard structure and is not affiliated with, endorsed by, or
-          sponsored by The New York Times or NYT Cooking.
+          {disclaimerText}
         </section>
       ) : null}
 
@@ -587,10 +616,7 @@ export function RecipePage({
       </main>
 
       {mode === 'share' ? (
-        <footer className="share-footer">
-          This page is a fan-made parody of the NYT Cooking recipe layout and is
-          not affiliated with or endorsed by The New York Times or NYT Cooking.
-        </footer>
+        <footer className="share-footer">{disclaimerText}</footer>
       ) : null}
     </div>
   );

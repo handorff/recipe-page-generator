@@ -11,6 +11,10 @@ function renderWithHash(hash = '') {
   return render(<App />);
 }
 
+async function acknowledgeDisclaimer(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole('button', { name: /ok, i understand/i }));
+}
+
 describe('App', () => {
   beforeEach(() => {
     Object.defineProperty(window.navigator, 'clipboard', {
@@ -28,6 +32,7 @@ describe('App', () => {
   it('allows inline editing in edit mode', async () => {
     const user = userEvent.setup();
     renderWithHash();
+    await acknowledgeDisclaimer(user);
 
     await user.click(screen.getByRole('button', { name: 'Recipe title' }));
 
@@ -43,6 +48,7 @@ describe('App', () => {
   it('supports ingredient and step add, delete, and reorder controls in edit mode', async () => {
     const user = userEvent.setup();
     const { container } = renderWithHash();
+    await acknowledgeDisclaimer(user);
 
     const ingredientList = container.querySelector('.ingredient-list');
     expect(ingredientList).not.toBeNull();
@@ -81,45 +87,86 @@ describe('App', () => {
     );
   });
 
-  it('renders a clean, non-editable share mode from a valid hash', () => {
+  it('renders a clean, non-editable share mode from a valid hash', async () => {
+    const user = userEvent.setup();
     renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
+    await acknowledgeDisclaimer(user);
 
     expect(screen.queryByText(/parody project/i)).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Copy share URL' })
     ).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Add ingredient' })).not.toBeInTheDocument();
-    expect(screen.getByText(/fan-made parody/i)).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Add ingredient' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
+      )
+    ).toBeInTheDocument();
   });
 
-  it('shows the right disclaimer or footer for each mode', () => {
+  it('shows the right disclaimer or footer for each mode', async () => {
+    const user = userEvent.setup();
     const initialRender = renderWithHash();
+    await acknowledgeDisclaimer(user);
 
-    expect(screen.getByText(/parody project/i)).toBeInTheDocument();
-    expect(screen.queryByText(/fan-made parody/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
+      )
+    ).toBeInTheDocument();
 
     initialRender.unmount();
     renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
+    await acknowledgeDisclaimer(user);
 
-    expect(screen.queryByText(/parody project/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/fan-made parody/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
+      )
+    ).toBeInTheDocument();
   });
 
-  it('switches mode based on the root hash and falls back to edit mode on decode failure', () => {
+  it('requires disclaimer acknowledgement before showing the recipe page', async () => {
+    const user = userEvent.setup();
+    renderWithHash();
+
+    expect(
+      screen.getByRole('heading', { name: /disclaimer/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Copy share URL' })
+    ).not.toBeInTheDocument();
+
+    await acknowledgeDisclaimer(user);
+
+    expect(screen.getByRole('button', { name: 'Copy share URL' })).toBeInTheDocument();
+  });
+
+  it('switches mode based on the root hash and falls back to edit mode on decode failure', async () => {
+    const user = userEvent.setup();
     const initialRender = renderWithHash();
+    await acknowledgeDisclaimer(user);
 
     expect(screen.getByRole('button', { name: 'Copy share URL' })).toBeInTheDocument();
 
     initialRender.unmount();
     const shareRender = renderWithHash(encodeRecipeToHash(DEFAULT_RECIPE));
+    await acknowledgeDisclaimer(user);
 
     expect(
       screen.queryByRole('button', { name: 'Copy share URL' })
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/fan-made parody/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /this page is for parody use only and is not affiliated with, endorsed by, or sponsored by the new york times or nyt cooking/i
+      )
+    ).toBeInTheDocument();
 
     shareRender.unmount();
     renderWithHash('#r=broken');
+    await acknowledgeDisclaimer(user);
 
     expect(screen.getByRole('alert')).toHaveTextContent(
       /could not be loaded/i
