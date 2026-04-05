@@ -105,6 +105,8 @@ describe('App', () => {
     renderWithHash(shareHash);
 
     expect(document.title).toBe(DEFAULT_RECIPE.title);
+    expect(screen.queryByRole('button', { name: 'Menu' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Search' })).not.toBeInTheDocument();
     expect(screen.queryByText(/parody project/i)).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Copy share URL' })
@@ -160,6 +162,8 @@ describe('App', () => {
     await acknowledgeDisclaimer(user);
 
     expect(screen.getByRole('button', { name: 'Copy share URL' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Menu' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Search' })).not.toBeInTheDocument();
   });
 
   it('switches mode based on the root hash and falls back to edit mode on decode failure', async () => {

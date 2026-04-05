@@ -9,7 +9,6 @@
   --page-width: 390px;
   --gutter: 20px;
   --content-width: 350px;
-  --border-soft: #ccc;
   --ink: #222;
   --ink-soft: #5b5b5b;
   --editor-accent: #b96a36;
@@ -62,15 +61,6 @@ textarea {
   background: #fff5f5;
 }
 
-.site-chrome {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-bottom: 1px solid var(--border-soft);
-  background: #fff;
-}
-
-.site-chrome__inner,
 .parody-banner,
 .load-error,
 .editor-toolbar,
@@ -81,79 +71,6 @@ textarea {
 
 .recipe-page {
   margin: 0 auto;
-}
-
-.site-chrome__inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 45px;
-}
-
-.site-chrome__left,
-.site-chrome__right {
-  display: flex;
-  align-items: center;
-}
-
-.site-chrome__left {
-  margin-left: 8px;
-}
-
-.site-chrome__right {
-  margin-right: 8px;
-}
-
-.site-chrome__center {
-  position: absolute;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  height: 45px;
-  transform: translateX(-50%);
-}
-
-.chrome-icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: #fff;
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.site-chrome__left .chrome-icon-button + .chrome-icon-button {
-  margin-left: 14px;
-}
-
-.site-chrome__right .chrome-icon-button:first-child {
-  width: 34px;
-  margin-right: 2px;
-}
-
-.site-chrome__right .chrome-icon-button:last-child {
-  width: 24px;
-}
-
-.chrome-icon-button svg {
-  width: 24px;
-  height: 24px;
-  overflow: visible;
-}
-
-.site-chrome__right .chrome-icon-button:first-child svg {
-  width: 25px;
-  height: 25px;
-}
-
-.cooking-logo {
-  width: 168px;
-  height: 31px;
 }
 
 .parody-banner,
@@ -775,10 +692,6 @@ textarea {
 @media (min-width: 760px) {
   body {
     background: #f8f8f8;
-  }
-
-  .site-chrome {
-    box-shadow: 0 0 0 1px #f2f2f2 inset;
   }
 
   .editor-toolbar,
